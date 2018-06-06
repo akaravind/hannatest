@@ -2,4 +2,4 @@
 input_format: profdata
 coverage_service: cobertura_xml
 scheme: MaterialDesign
-workspace: MaterialDesign.xcworkspace
+xcodeproj: MaterialDesign.xcodeproj
