@@ -35,13 +35,7 @@ export LANG=en_US.UTF-8
     upload_to_testflight
   end
 
-xcodebuild clean archive -archivePath build/MaterialDesign \
-                         -scheme MaterialDesign
-xcodebuild -exportArchive \
-           -exportFormat ipa \
-           -archivePath "build/MaterialDesign.xcarchive" \
-           -exportPath "build/MaterialDesign.ipa" \
-           -exportProvisioningProfile "ProvisioningProfileName"
+
 
 
     end
