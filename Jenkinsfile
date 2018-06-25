@@ -17,7 +17,9 @@ node {
                 url: 'https://github.com/VarunRaj94/hannatest.git/'
             ]]
         ])
-        
+        export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
          // Mark the cocoapods 'stage'....
          stage 'Cocoapods Install'
          sh "bundle exec fastlane pods"   
