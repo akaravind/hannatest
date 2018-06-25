@@ -4,39 +4,20 @@ env.USER = 'iosbuilds'
 // backwards compat with old branch variable
 env.GIT_BRANCH = env.BRANCH_NAME
 
-
-def getWorkspace() {
-    pwd().replace("%2F", "_")
-}
-
-def wipeWorkspace(String workspace) {
-    if (workspace) {
-        sh "find ${workspace} -mindepth 4 -depth -delete"
-    }
-}
-
-def isRelease() {
-    if (env.RELEASE == "true") {
-      return true
-    }
-}
-
 node {
-try {
-     // Manually set the workspace to deal with clang 
-     // choking on %2f in the directory
-     ws(getWorkspace()) {
-       wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
-         workspace = pwd()
-         // Wipe the workspace so we are building completely clean
-         wipeWorkspace(workspace) 
-         // Mark the code checkout 'stage'....
-         stage 'Checkout'
-         // Checkout code from repository
-         checkout scm
-         // Copy nutrition database into place
-         sh "cp ${workspace}/../nutrition.db ${workspace}/Nutrition/Nutrition/nutrition.db"
-
+    stage('Checkout/Build/Test') {
+        // Checkout files.
+        checkout([
+            $class: 'GitSCM',
+            branches: [[name: 'master']],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [], submoduleCfg: [],
+            userRemoteConfigs: [[
+                name: 'hannatest',
+                url: 'https://github.com/VarunRaj94/hannatest.git/'
+            ]]
+        ])
+        
          // Mark the cocoapods 'stage'....
          stage 'Cocoapods Install'
          sh "fastlane pods"   
@@ -49,10 +30,5 @@ try {
          sh "fastlane tests"   
 
          step([$class: 'JUnitResultArchiver', testResults: 'build/reports/*.xml'])
-      }
     }
-  } catch (e) {
-    slackSend channel: '#ios', color: 'danger', message: ":dizzy_face: Build failed ${env.JOB_NAME} (${env.BUILD_NUMBER})\n${env.BUILD_URL}"
-    throw e
-  }
 }
