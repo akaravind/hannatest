@@ -20,7 +20,7 @@ node {
         
          // Mark the cocoapods 'stage'....
          stage 'Cocoapods Install'
-         sh "fastlane pods"   
+         sh "bundle exec fastlane pods"   
 
          // Mark the code unit tests 'stage'....
          stage 'Tests'
