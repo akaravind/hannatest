@@ -11,17 +11,18 @@ node {
                 url: 'https://github.com/VarunRaj94/hannatest.git/'
             ]]
         ])
+        
+         // Mark the cocoapods 'stage'....
+         stage 'Cocoapods Install'
+         sh "fastlane pods"   
 
-        // Build and Test
-        sh 'xcodebuild -workspace MaterialDesign.xcworkspace -scheme "MaterialDesign" -configuration "Debug" build test -destination "platform=iOS Simulator,name=iPhone 6,OS=11.2" -enableCodeCoverage YES | /usr/local/bin/ocunit2junit' 
+         // Mark the code unit tests 'stage'....
+         stage 'Tests'
+         // reset the simulators before running tests
+         sh "killall Simulator || true"
+         sh "SNAPSHOT_FORCE_DELETE=yes snapshot reset_simulators"
+         sh "fastlane tests"   
 
-        // Publish test results.
-        step([$class: 'JUnitResultArchiver', allowEmptyResults: true, testResults: 'test-reports/*.xml'])
-    }	
-
-	// Generate Code Coverage report
-	sh '/usr/local/bin/slather coverage --jenkins --html --scheme TimeTable TimeTable.xcodeproj/'
-	}
-
-	// Publish coverage results
-	publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'html', reportFiles: 'index.html', reportName: 'Coverage Report'])
+         step([$class: 'JUnitResultArchiver', testResults: 'build/reports/*.xml'])
+    }
+}
