@@ -26,8 +26,6 @@ default_platform :iOS
 
 platform :iOS do
 
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
 
   desc "Push a new beta build to TestFlight"
   lane :beta do
