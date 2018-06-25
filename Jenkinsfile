@@ -25,9 +25,9 @@ node {
          // Mark the code unit tests 'stage'....
          stage 'Tests'
          // reset the simulators before running tests
-         sh "killall Simulator || true"
-         sh "SNAPSHOT_FORCE_DELETE=yes snapshot reset_simulators"
-         sh "fastlane tests"   
+   //      sh "killall Simulator || true"
+   //      sh "SNAPSHOT_FORCE_DELETE=yes snapshot reset_simulators"
+         sh "fastlane scan"   
 
          step([$class: 'JUnitResultArchiver', testResults: 'build/reports/*.xml'])
     }
